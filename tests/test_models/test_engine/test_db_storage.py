@@ -23,6 +23,7 @@ classes = {"Amenity": Amenity, "City": City, "Place": Place,
            "Review": Review, "State": State, "User": User}
 
 
+@unittest.skipIf(db != 'db', "not testing DB storage")
 class TestDBStorageDocs(unittest.TestCase):
     """Tests to check the documentation and style of DBStorage class"""
     @classmethod
@@ -68,21 +69,30 @@ test_db_storage.py'])
                             "{:s} method needs a docstring".format(func[0]))
 
 
-class TestFileStorage(unittest.TestCase):
-    """Test the FileStorage class"""
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_all_returns_dict(self):
-        """Test that all returns a dictionaty"""
-        self.assertIs(type(models.storage.all()), dict)
+@unittest.skipIf(db != 'db', "not testing DB storage")
+class TestDBStorage(unittest.TestCase):
+    """Test the DBStorage class"""
+    def test_get_object_by_id(self):
+        """Test retrieving an object by its ID"""
+        new_state = State(name="Test State")
+        storage.new(new_state)
+        storage.save()
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_all_no_class(self):
-        """Test that all returns all rows when no class is passed"""
+        retrieved_state = storage.get(State, new_state.id)
+        self.assertIsNotNone(retrieved_state)
+        self.assertEqual(retrieved_state.id, new_state.id)
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_new(self):
-        """test that new adds an object to the database"""
+    def test_get_nonexistent_object(self):
+        """Test retrieving a nonexistent object"""
+        retrieved_state = storage.get(State, "nonexistent_id")
+        self.assertIsNone(retrieved_state)
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_save(self):
-        """Test that save properly saves objects to file.json"""
+    def test_count_all_objects(self):
+        """Test counting all objects"""
+        count = storage.count()
+        self.assertEqual(count, total_expected_count_of_objects)
+
+    def test_count_objects_by_class(self):
+        """Test counting objects by class"""
+        count = storage.count(State)
+        self.assertEqual(count, expected_count_of_states)
