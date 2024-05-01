@@ -27,5 +27,5 @@ def get_stats():
     """Retrieves the number of each object by type"""
     counts = {}
     for classe in classes:
-        count[classe] = storage.count(classes[classe])
+        counts[classe] = storage.count(classes[classe])
     return jsonify(counts)
