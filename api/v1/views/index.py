@@ -23,7 +23,7 @@ def status():
 
 
 @app_views.route('/stats', methods=['GET'])
-def get_stats():
+def count():
     """Retrieves the number of each object by type"""
     counts = {}
     for classe in classes:
