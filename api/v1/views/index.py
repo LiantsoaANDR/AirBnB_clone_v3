@@ -7,6 +7,12 @@ from flask import jsonify
 
 @app_views.route('/status', methods=['GET'])
 def status():
+    """Returns API status"""
+    return jsonify({"status": "OK"})
+
+
+@app_views.route('/status', methods=['GET'])
+def get_stats():
     """Retrieves the number of each object by type"""
 
     counts = {
